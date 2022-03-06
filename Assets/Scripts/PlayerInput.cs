@@ -9,7 +9,7 @@ public class PlayerInput : MonoBehaviour
 	public Vector2 move;
 	public Vector2 look;
 	public bool jump;
-	public bool sprint;
+	public bool crouch;
 
 	[Header("Movement Settings")]
 	public bool analogMovement;
@@ -36,11 +36,11 @@ public class PlayerInput : MonoBehaviour
 
 		if (Input.GetKeyDown(KeyCode.LeftShift))
 		{
-			sprint = true;
+			crouch = true;
 		}
 		if (Input.GetKeyUp(KeyCode.LeftShift))
 		{
-			sprint = false;
+			crouch = false;
 		}
 		if (Input.GetKeyDown(KeyCode.Space))
 		{

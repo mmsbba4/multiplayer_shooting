@@ -40,6 +40,7 @@ namespace Photon.Pun.UtilityScripts
 
         public void Start()
         {
+            Application.targetFrameRate = 60;
             if (this.AutoConnect)
             {
                 this.ConnectNow();

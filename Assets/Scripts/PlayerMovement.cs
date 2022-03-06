@@ -17,9 +17,29 @@ public class PlayerMovement : MonoBehaviour
     {
 		GroundedCheck();
 		CameraRotation();
-		Move();
 		JumpAndGravity();
+		CrouchUpdate();
+		if (Crouch) return;
+		Move();
 	}
+	bool Crouch = false;
+	void CrouchUpdate()
+    {
+		Crouch = mInputListen.crouch;
+		if (Crouch)
+        {
+			mAnimator.SetBool("is_crouch", true);
+			mCharacterController.Move(new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
+			mCharacterController.center = new Vector3( 0,-0.625f,0);
+			mCharacterController.height = 0.75f;
+		}
+        else
+        {
+			mAnimator.SetBool("is_crouch", false);
+			mCharacterController.center = new Vector3(0, -0.25f, 0);
+			mCharacterController.height = 1.5f;
+		}
+    }
 	public float _threshold = 0.1f;
 	public float _cinemachineTargetYaw = 0;
 	public float _cinemachineTargetPitch = 0;
@@ -52,7 +72,7 @@ public class PlayerMovement : MonoBehaviour
 	public float moveSpeed;
 	public CharacterController mCharacterController;
 	public float _verticalVelocity = -9.8f;
-	Animator mAnimator;
+	public Animator mAnimator;
 	private void Move()
 	{
 
@@ -63,8 +83,9 @@ public class PlayerMovement : MonoBehaviour
 		mCharacterController.Move(targetDirection.normalized * (moveSpeed * Time.deltaTime) + new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
 
 
-		mAnimator.SetFloat("horizontal", inputDirection.x);
-		mAnimator.SetFloat("vertical", inputDirection.z);
+		mAnimator.SetFloat("horizontal", inputDirection.normalized.x);
+		mAnimator.SetFloat("vertical", inputDirection.normalized.z);
+		mAnimator.SetFloat("moving_speed", targetDirection.magnitude);
 	}
 	private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
 	{
@@ -88,7 +109,6 @@ public class PlayerMovement : MonoBehaviour
 		// set sphere position, with offset
 		Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z);
 		Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers, QueryTriggerInteraction.Ignore);
-		print(Grounded);
 		// update animator if using character
 	}
 	private float _jumpTimeoutDelta;
@@ -106,9 +126,9 @@ public class PlayerMovement : MonoBehaviour
 
 	[Space(10)]
 	[Tooltip("Time required to pass before being able to jump again. Set to 0f to instantly jump again")]
-	public float JumpTimeout = 0.50f;
+	public float JumpTimeout = 0.5f;
 	[Tooltip("Time required to pass before entering the fall state. Useful for walking down stairs")]
-	public float FallTimeout = 0.15f;
+	public float FallTimeout = 0.1f;
 	[Space(10)]
 	[Tooltip("The height the player can jump")]
 	public float JumpHeight = 1.2f;
@@ -130,6 +150,7 @@ public class PlayerMovement : MonoBehaviour
 			// Jump
 			if (mInputListen.jump && _jumpTimeoutDelta <= 0.0f)
 			{
+				mAnimator.SetBool("is_jump", true);
 				// the square root of H * -2 * G = how much velocity needed to reach desired height
 				_verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
 
@@ -154,11 +175,12 @@ public class PlayerMovement : MonoBehaviour
 			else
 			{
 				// update animator if using character
-
+				mAnimator.SetBool("is_jump", false);
 			}
 
 			// if we are not grounded, do not jump
 			mInputListen.jump = false;
+			
 		}
 
 		// apply gravity over time if under terminal (multiply by delta time twice to linearly speed up over time)
