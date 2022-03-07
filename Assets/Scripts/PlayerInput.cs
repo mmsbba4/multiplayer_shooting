@@ -10,6 +10,7 @@ public class PlayerInput : MonoBehaviour
 	public Vector2 look;
 	public bool jump;
 	public bool crouch;
+	public bool fire;
 
 	[Header("Movement Settings")]
 	public bool analogMovement;
@@ -50,6 +51,14 @@ public class PlayerInput : MonoBehaviour
 		{
 			jump = false;
 		}
+		if (Input.GetButton("Fire1"))
+        {
+			fire = true;
+        }
+        else
+        {
+			fire = false;
+        }
 	}
 
 	private void Start()
@@ -71,10 +80,4 @@ public class PlayerInput : MonoBehaviour
 		print("update cursor lockstate");
 		Cursor.lockState = newState ? CursorLockMode.Locked : CursorLockMode.None;
 	}
-	private void OnDestroy()
-	{
-		print("Disconected................................");
-		SceneManager.LoadScene(0);
-	}
-
 }

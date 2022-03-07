@@ -1,20 +1,42 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class PlayerMovement : MonoBehaviour
+using Photon.Pun;
+using Photon.Realtime;
+using RootMotion.FinalIK;
+public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
 {
+	public Cinemachine.CinemachineVirtualCamera vCamera;
     // Start is called before the first frame update
     void Start()
     {
 		mInputListen = GetComponent<PlayerInput>();
 		mCharacterController = GetComponent<CharacterController>();
 		mAnimator = GetComponentInChildren<Animator>();
-    }
+		lastCapCenter = mCharacterController.center;
+		lastCapHeight = mCharacterController.height;
+
+		if (photonView.IsMine)
+        {
+			if (FindObjectOfType<Cinemachine.CinemachineVirtualCamera>() != null)
+			{
+				FindObjectOfType<Cinemachine.CinemachineVirtualCamera>().Follow = cameraAnchor;
+				FindObjectOfType<Cinemachine.CinemachineVirtualCamera>().LookAt = cameraAnchor;
+
+			}
+			
+		}
+        else
+        {
+				Destroy(GetComponentInChildren<PlayerLookTarget>());
+        }
+	}
+	public Transform cameraAnchor, aimTarget;
 	public PlayerInput mInputListen;
     // Update is called once per frame
-    void LateUpdate()
+    void Update()
     {
+		if (!photonView.IsMine) return;
 		GroundedCheck();
 		CameraRotation();
 		JumpAndGravity();
@@ -23,6 +45,8 @@ public class PlayerMovement : MonoBehaviour
 		Move();
 	}
 	bool Crouch = false;
+	public Vector3 lastCapCenter;
+	public float lastCapHeight;
 	void CrouchUpdate()
     {
 		Crouch = mInputListen.crouch;
@@ -30,14 +54,14 @@ public class PlayerMovement : MonoBehaviour
         {
 			mAnimator.SetBool("is_crouch", true);
 			mCharacterController.Move(new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
-			mCharacterController.center = new Vector3( 0,-0.625f,0);
-			mCharacterController.height = 0.75f;
+			mCharacterController.center = new Vector3( 0, lastCapCenter.y - Mathf.Abs(lastCapCenter.y/2f), 0);
+			mCharacterController.height = lastCapHeight / 2f;
 		}
         else
         {
 			mAnimator.SetBool("is_crouch", false);
-			mCharacterController.center = new Vector3(0, -0.25f, 0);
-			mCharacterController.height = 1.5f;
+			mCharacterController.center = lastCapCenter;
+			mCharacterController.height = lastCapHeight;
 		}
     }
 	public float _threshold = 0.1f;
@@ -189,4 +213,16 @@ public class PlayerMovement : MonoBehaviour
 			_verticalVelocity += Gravity * Time.deltaTime;
 		}
 	}
+
+    void IPunObservable.OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+			stream.SendNext(aimTarget.position);
+		}
+        else
+        {
+			aimTarget.position = (Vector3)stream.ReceiveNext();
+        }
+    }
 }

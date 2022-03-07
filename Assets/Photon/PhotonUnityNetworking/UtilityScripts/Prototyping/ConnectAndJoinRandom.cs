@@ -16,10 +16,8 @@
 //#endif
 
 using UnityEngine;
-
-//using Photon.Pun;
+using Photon.Pun;
 using Photon.Realtime;
-
 namespace Photon.Pun.UtilityScripts
 {
     /// <summary>Simple component to call ConnectUsingSettings and to get into a PUN room easily.</summary>
@@ -51,7 +49,7 @@ namespace Photon.Pun.UtilityScripts
         {
             Debug.Log("ConnectAndJoinRandom.ConnectNow() will now call: PhotonNetwork.ConnectUsingSettings().");
 
-            
+            PhotonNetwork.NickName = Random.Range(1000,9999).ToString();
             PhotonNetwork.ConnectUsingSettings();
             PhotonNetwork.GameVersion = this.Version + "." + SceneManagerHelper.ActiveSceneBuildIndex;
            
@@ -74,7 +72,10 @@ namespace Photon.Pun.UtilityScripts
             Debug.Log("OnJoinedLobby(). This client is now connected to Relay in region [" + PhotonNetwork.CloudRegion + "]. This script now calls: PhotonNetwork.JoinRandomRoom();");
             PhotonNetwork.JoinRandomRoom();
         }
-
+        public void RespawnPlayer()
+        {
+            PhotonNetwork.Instantiate("TaniCharacter", new Vector3(0, 5, 0), Quaternion.identity);
+        }
         public override void OnJoinRandomFailed(short returnCode, string message)
         {
             Debug.Log("OnJoinRandomFailed() was called by PUN. No random room available in region [" + PhotonNetwork.CloudRegion + "], so we create one. Calling: PhotonNetwork.CreateRoom(null, new RoomOptions() {maxPlayers = 4}, null);");
@@ -95,6 +96,7 @@ namespace Photon.Pun.UtilityScripts
         public override void OnJoinedRoom()
         {
             Debug.Log("OnJoinedRoom() called by PUN. Now this client is in a room in region [" + PhotonNetwork.CloudRegion + "]. Game is now running.");
+            PhotonNetwork.Instantiate("TaniCharacter", new Vector3(0,5,0), Quaternion.identity);
         }
     }
 

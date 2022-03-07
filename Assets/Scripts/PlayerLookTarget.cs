@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerLookTarget : MonoBehaviour
 {
-    public LayerMask EnemyLayer;
+
     void Update()
     {
         AimingUpdate();
@@ -16,10 +16,6 @@ public class PlayerLookTarget : MonoBehaviour
         if (Physics.Raycast(ray, out hit, 400))
         {
             transform.position = hit.point;
-            if (hit.transform.gameObject.layer != (int)EnemyLayer)
-            {
-                
-            }
         }
         else
         {
