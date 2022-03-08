@@ -10,6 +10,7 @@ public class PlayerShooting : MonoBehaviourPunCallbacks
     private float deltaDelay = 0;
     public PlayerInput inputListener;
     public Transform startRay, endRay;
+
     void Update()
     {
         if (!photonView.IsMine) return;
@@ -35,7 +36,8 @@ public class PlayerShooting : MonoBehaviourPunCallbacks
                 photonView.RPC("PlayerHitEffect", RpcTarget.All, hit.point, hit.normal);
                 if (hit.collider.gameObject.GetComponent<DamageCollider>() != null)
                 {
-                    hit.collider.gameObject.GetComponent<DamageCollider>().TakeDamage(gunDamage);
+                    hit.collider.gameObject.GetComponent<DamageCollider>().TakeDamage(hit.point,gunDamage);
+                    
                 }
             }
             else

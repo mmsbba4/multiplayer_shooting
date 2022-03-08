@@ -16,11 +16,11 @@ public class PlayerInput : MonoBehaviour
 	public bool analogMovement;
 
 	[Header("Mouse Cursor Settings")]
-	public bool cursorLocked = true;
+	//public bool cursorLocked = true;
 	public bool cursorInputForLook = true;
 	private void Update()
 	{
-		if (cursorInputForLook && cursorLocked)
+		if (cursorInputForLook /*&& cursorLocked*/)
 		{
 			float mouseX = Input.GetAxisRaw("Mouse X");
 			float mouseY = Input.GetAxisRaw("Mouse Y");
@@ -61,23 +61,23 @@ public class PlayerInput : MonoBehaviour
         }
 	}
 
-	private void Start()
-	{
-		SetCursorState(cursorLocked);
-	}
-	private void OnApplicationFocus(bool hasFocus)
-	{
-		SetCursorState(cursorLocked);
-		Debug.Log("Application Focus " + hasFocus);
-	}
-	public void UpdateFocusStatus(bool value)
-	{
-		cursorInputForLook = value;
-		SetCursorState(cursorLocked);
-	}
-	public void SetCursorState(bool newState)
-	{
-		print("update cursor lockstate");
-		Cursor.lockState = newState ? CursorLockMode.Locked : CursorLockMode.None;
-	}
+	//private void Start()
+	//{
+	//	SetCursorState(cursorLocked);
+	//}
+	//private void OnApplicationFocus(bool hasFocus)
+	//{
+	//	SetCursorState(cursorLocked);
+	//	Debug.Log("Application Focus " + hasFocus);
+	//}
+	//public void UpdateFocusStatus(bool value)
+	//{
+	//	cursorInputForLook = value;
+	//	SetCursorState(cursorLocked);
+	//}
+	//public void SetCursorState(bool newState)
+	//{
+	//	print("update cursor lockstate");
+	//	Cursor.lockState = newState ? CursorLockMode.Locked : CursorLockMode.None;
+	//}
 }

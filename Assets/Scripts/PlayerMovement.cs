@@ -7,7 +7,8 @@ using RootMotion.FinalIK;
 public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
 {
 	public Cinemachine.CinemachineVirtualCamera vCamera;
-    // Start is called before the first frame update
+	public AudioClip mfoot1, mfoot2, mjump, mland;
+	AudioSource mSource;
     void Start()
     {
 		mInputListen = GetComponent<PlayerInput>();
@@ -15,7 +16,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
 		mAnimator = GetComponentInChildren<Animator>();
 		lastCapCenter = mCharacterController.center;
 		lastCapHeight = mCharacterController.height;
-
+		mSource = GetComponent<AudioSource>();
 		if (photonView.IsMine)
         {
 			if (FindObjectOfType<Cinemachine.CinemachineVirtualCamera>() != null)
@@ -97,8 +98,11 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
 	public CharacterController mCharacterController;
 	public float _verticalVelocity = -9.8f;
 	public Animator mAnimator;
+	float deltaMoveStep = 0;
+	bool mstep = false;
 	private void Move()
 	{
+
 
 		Vector3 inputDirection = new Vector3(mInputListen.move.x, 0, mInputListen.move.y);
 
@@ -110,6 +114,20 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
 		mAnimator.SetFloat("horizontal", inputDirection.normalized.x);
 		mAnimator.SetFloat("vertical", inputDirection.normalized.z);
 		mAnimator.SetFloat("moving_speed", targetDirection.magnitude);
+		deltaMoveStep += Time.deltaTime;
+		if (Grounded && deltaMoveStep > 0.25f && targetDirection.magnitude > 0.25f)
+		{
+			mstep = !mstep;
+			if (mstep)
+            {
+				mSource.PlayOneShot(mfoot1);
+			}
+            else
+            {
+				mSource.PlayOneShot(mfoot2);
+			}
+			deltaMoveStep = 0;
+        }
 	}
 	private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
 	{
@@ -128,11 +146,17 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
 		// when selected, draw a gizmo in the position of, and matching radius of, the grounded collider
 		Gizmos.DrawSphere(new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z), GroundedRadius);
 	}
+	bool lastGrounded = false;
 	private void GroundedCheck()
 	{
 		// set sphere position, with offset
 		Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z);
 		Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers, QueryTriggerInteraction.Ignore);
+		if (Grounded && lastGrounded != Grounded)
+        {
+			mSource.PlayOneShot(mland);
+		}
+		lastGrounded = Grounded;
 		// update animator if using character
 	}
 	private float _jumpTimeoutDelta;
@@ -174,6 +198,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
 			// Jump
 			if (mInputListen.jump && _jumpTimeoutDelta <= 0.0f)
 			{
+				mSource.PlayOneShot(mjump);
 				mAnimator.SetBool("is_jump", true);
 				// the square root of H * -2 * G = how much velocity needed to reach desired height
 				_verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
@@ -200,6 +225,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
 			{
 				// update animator if using character
 				mAnimator.SetBool("is_jump", false);
+				
 			}
 
 			// if we are not grounded, do not jump
