@@ -1098,6 +1098,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f1c4fa8dfa5a554b809df63367a8a5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AiInput: 0
   move: {x: 0, y: 0}
   look: {x: 0, y: 0}
   jump: 0

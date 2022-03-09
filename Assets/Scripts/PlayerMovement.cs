@@ -17,7 +17,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
 		lastCapCenter = mCharacterController.center;
 		lastCapHeight = mCharacterController.height;
 		mSource = GetComponent<AudioSource>();
-		if (photonView.IsMine)
+		if (photonView.IsMine && !mInputListen.AiInput)
         {
 			if (FindObjectOfType<Cinemachine.CinemachineVirtualCamera>() != null)
 			{

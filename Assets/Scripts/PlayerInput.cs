@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class PlayerInput : MonoBehaviour
 {
+	public bool AiInput;
 	[Header("Character Input Values")]
 	public Vector2 move;
 	public Vector2 look;
@@ -20,6 +21,7 @@ public class PlayerInput : MonoBehaviour
 	public bool cursorInputForLook = true;
 	private void Update()
 	{
+		if (AiInput) return;
 		if (cursorInputForLook /*&& cursorLocked*/)
 		{
 			float mouseX = Input.GetAxisRaw("Mouse X");

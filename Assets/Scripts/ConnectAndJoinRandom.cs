@@ -79,6 +79,7 @@ using System.Collections.Generic;
         {
             Debug.Log("OnJoinedRoom() called by PUN. Now this client is in a room in region [" + PhotonNetwork.CloudRegion + "]. Game is now running.");
         PhotonNetwork.Instantiate("TaniCharacter", SpawnPoint[Random.Range(0, SpawnPoint.Count)].position, Quaternion.identity);
+        PhotonNetwork.Instantiate("AICharacter", SpawnPoint[Random.Range(0, SpawnPoint.Count)].position, Quaternion.identity);
         GameManager.instance.OnStartGame.Invoke();
         }
     }
