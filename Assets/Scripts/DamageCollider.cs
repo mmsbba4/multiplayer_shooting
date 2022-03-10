@@ -7,16 +7,14 @@ public class DamageCollider : MonoBehaviour
 {
     [Range(0,100)]
     public int CritDamatePer;
-    public PlayerHealth health;
+    public IHealth health;
     private void Start()
     {
-        health = GetComponentInParent<PlayerHealth>();
+        health = GetComponentInParent<IHealth>();
     }
     public void TakeDamage(Vector3 hitPoint,int damage)
     {
         if (health == null) return;
-        print("damage to "+ health.gameObject.GetComponent<PhotonView>().Owner.NickName);
-        
         int tmp = Random.Range(0, 100);
         if (tmp < CritDamatePer)
         {

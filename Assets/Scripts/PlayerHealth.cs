@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
-public class PlayerHealth : MonoBehaviourPunCallbacks
+public class PlayerHealth : MonoBehaviourPunCallbacks, IHealth
 {
     public GameObject characterModel;
     public int CurrentHealth
