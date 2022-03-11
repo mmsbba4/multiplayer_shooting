@@ -3,11 +3,12 @@ using Photon.Pun;
 using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
     public class ConnectAndJoinRandom : MonoBehaviourPunCallbacks
     {
         /// <summary>Connect automatically? If false you can set this to true later on or call ConnectUsingSettings in your own scripts.</summary>
         public bool AutoConnect = true;
-
+        public Text connectStatus;
         /// <summary>Used as PhotonNetwork.GameVersion.</summary>
         public byte Version = 1;
 
@@ -55,7 +56,7 @@ using System.Collections.Generic;
         }
         public void RespawnPlayer()
         {
-            PhotonNetwork.Instantiate("TaniCharacter", SpawnPoint[Random.Range(0, SpawnPoint.Count)].position, Quaternion.identity);
+            PhotonNetwork.Instantiate("RifleCharacter", SpawnPoint[Random.Range(0, SpawnPoint.Count)].position, Quaternion.identity);
             GameManager.instance.OnStartGame.Invoke();
     }
         public override void OnJoinRandomFailed(short returnCode, string message)
@@ -78,7 +79,14 @@ using System.Collections.Generic;
         public override void OnJoinedRoom()
         {
             Debug.Log("OnJoinedRoom() called by PUN. Now this client is in a room in region [" + PhotonNetwork.CloudRegion + "]. Game is now running.");
-        PhotonNetwork.Instantiate("TaniCharacter", SpawnPoint[Random.Range(0, SpawnPoint.Count)].position, Quaternion.identity);
-        GameManager.instance.OnStartGame.Invoke();
+            GameObject myPlayer = PhotonNetwork.Instantiate("RifleCharacter", SpawnPoint[Random.Range(0, SpawnPoint.Count)].position, Quaternion.identity);
+            ChatMessage.instance.my_player = myPlayer.GetComponent<PlayerMovement>();
+            GameManager.instance.OnStartGame.Invoke();
+            connectStatus.transform.parent.gameObject.SetActive(false);
         }
+    private void FixedUpdate()
+    {
+        if (connectStatus.gameObject.activeInHierarchy)
+        connectStatus.text = "Connecting...(" + PhotonNetwork.NetworkClientState.ToString() + ")";
     }
+}

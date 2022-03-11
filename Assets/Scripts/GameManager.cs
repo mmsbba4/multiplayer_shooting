@@ -8,7 +8,7 @@ using Photon.Realtime;
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
-    public Slider healthSlider;
+    public Slider healthSlider, gunSlider;
     public Slider respawnCountdown;
     public PlayerHealth currentHealth;
     public Button respawnButton;
@@ -17,6 +17,9 @@ public class GameManager : MonoBehaviour
     public UnityEvent OnDead = new UnityEvent();
     public UnityEvent OnRespawn = new UnityEvent();
     public Image hitFlash;
+    public PlayerShooting currentShooting;
+    public Image playerArtwork;
+    public Text nameText;
     private void Awake()
     {
         instance = this;
@@ -32,6 +35,11 @@ public class GameManager : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+    }
+    public void SetPlayerInfo(Sprite artWork, string playerName)
+    {
+        playerArtwork.sprite = artWork;
+        nameText.text = playerName;
     }
     public void GetHit()
     {
@@ -49,6 +57,12 @@ public class GameManager : MonoBehaviour
         {
             healthSlider.value = currentHealth.CurrentHealth;
         }
+        if (currentShooting != null)
+        {
+            gunSlider.value = currentShooting.Armor;
+        }
+
+
         respawnDeltaCoutdown -= Time.deltaTime;
         respawnCountdown.value = respawnDeltaCoutdown;
     }

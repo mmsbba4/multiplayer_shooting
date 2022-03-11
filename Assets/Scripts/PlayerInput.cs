@@ -5,24 +5,25 @@ using UnityEngine.SceneManagement;
 
 public class PlayerInput : MonoBehaviour
 {
-	public bool AiInput;
 	[Header("Character Input Values")]
 	public Vector2 move;
 	public Vector2 look;
 	public bool jump;
 	public bool crouch;
 	public bool fire;
-
 	[Header("Movement Settings")]
 	public bool analogMovement;
-
 	[Header("Mouse Cursor Settings")]
-	//public bool cursorLocked = true;
 	public bool cursorInputForLook = true;
 	private void Update()
 	{
-		if (AiInput) return;
-		if (cursorInputForLook /*&& cursorLocked*/)
+		if (ChatMessage.instance != null && ChatMessage.instance.isTyping)
+        {
+			move = Vector2.zero;
+			look = Vector2.zero;
+			return;
+		}
+		if (cursorInputForLook)
 		{
 			float mouseX = Input.GetAxisRaw("Mouse X");
 			float mouseY = Input.GetAxisRaw("Mouse Y");
@@ -62,24 +63,4 @@ public class PlayerInput : MonoBehaviour
 			fire = false;
         }
 	}
-
-	//private void Start()
-	//{
-	//	SetCursorState(cursorLocked);
-	//}
-	//private void OnApplicationFocus(bool hasFocus)
-	//{
-	//	SetCursorState(cursorLocked);
-	//	Debug.Log("Application Focus " + hasFocus);
-	//}
-	//public void UpdateFocusStatus(bool value)
-	//{
-	//	cursorInputForLook = value;
-	//	SetCursorState(cursorLocked);
-	//}
-	//public void SetCursorState(bool newState)
-	//{
-	//	print("update cursor lockstate");
-	//	Cursor.lockState = newState ? CursorLockMode.Locked : CursorLockMode.None;
-	//}
 }

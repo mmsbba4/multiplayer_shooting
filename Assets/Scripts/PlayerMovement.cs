@@ -17,7 +17,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
 		lastCapCenter = mCharacterController.center;
 		lastCapHeight = mCharacterController.height;
 		mSource = GetComponent<AudioSource>();
-		if (photonView.IsMine && !mInputListen.AiInput)
+		if (photonView.IsMine)
         {
 			if (FindObjectOfType<Cinemachine.CinemachineVirtualCamera>() != null)
 			{
@@ -32,6 +32,16 @@ public class PlayerMovement : MonoBehaviourPunCallbacks, IPunObservable
 				Destroy(GetComponentInChildren<PlayerLookTarget>());
         }
 	}
+
+	public void SendMessageFrom(string content)
+    {
+		photonView.RPC("SendMessageTo", RpcTarget.All, PhotonNetwork.LocalPlayer.NickName, content);
+    }
+	[PunRPC]
+	void SendMessageTo(string sender, string value)
+    {
+		ChatMessage.instance.SendMessage(sender, value);
+    }
 	public Transform cameraAnchor, aimTarget;
 	public PlayerInput mInputListen;
     // Update is called once per frame

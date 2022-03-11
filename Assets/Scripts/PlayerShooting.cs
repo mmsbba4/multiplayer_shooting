@@ -10,21 +10,34 @@ public class PlayerShooting : MonoBehaviourPunCallbacks
     private float deltaDelay = 0;
     public PlayerInput inputListener;
     public Transform startRay, endRay;
-
+    public int Armor = 20;
+    private void Start()
+    {
+        if (photonView.IsMine)
+            GameManager.instance.currentShooting = this;
+    }
     void Update()
     {
         if (!photonView.IsMine) return;
-        if (inputListener.fire && deltaDelay > shootDelay)
+        if (inputListener.fire && deltaDelay > shootDelay && Armor > 0)
         {
             Shoot();
             deltaDelay = 0;
+            Armor -= 1;
         }
         else
         {
             deltaDelay += Time.deltaTime;
         }
+        deltaAddArmor += Time.deltaTime;
+        if (!inputListener.fire && Armor < 20 &&deltaAddArmor > 0.1f)
+        {
+            deltaAddArmor = 0;
+            Armor++;
+        }
+
     }
-    
+    float deltaAddArmor = 0;
     void Shoot()
     {
         Ray ray = new Ray(startRay.position, endRay.position-startRay.position);

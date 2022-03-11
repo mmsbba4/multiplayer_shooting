@@ -45,6 +45,10 @@ public class PlayerHealth : MonoBehaviourPunCallbacks, IHealth
     void Death()
     {
         characterModel.transform.parent = null;
+        foreach (var i in GetComponentsInChildren<Collider>())
+        {
+            Destroy(i);
+        }
         GetComponent<PlayerMovement>().mAnimator.SetTrigger("death");
         if (photonView.IsMine) GameManager.instance.OnDead.Invoke();
         Destroy(gameObject);

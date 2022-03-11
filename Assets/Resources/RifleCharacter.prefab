@@ -1045,8 +1045,9 @@ GameObject:
   - component: {fileID: 3741710031918077849}
   - component: {fileID: 3741710031918077848}
   - component: {fileID: 7851511353983001624}
+  - component: {fileID: 1138937330558574828}
   m_Layer: 7
-  m_Name: TaniCharacter
+  m_Name: RifleCharacter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1098,7 +1099,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f1c4fa8dfa5a554b809df63367a8a5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AiInput: 0
   move: {x: 0, y: 0}
   look: {x: 0, y: 0}
   jump: 0
@@ -1158,11 +1158,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2c66585cb46854408327f25b0785aec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gunDamage: 100
+  gunDamage: 50
   shootDelay: 0.1
   inputListener: {fileID: 3741710031918077851}
   startRay: {fileID: 3741710032548346875}
   endRay: {fileID: 3741710032449467163}
+  Armor: 20
 --- !u!114 &3741710031918077850
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1326,6 +1327,25 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1138937330558574828
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3741710031918077841}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b1f079fb537bc543a7ae9e16414a160, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  characterSet: {fileID: 11400000, guid: d2f0e17ac78dd7f47b22e518e2631058, type: 2}
+  rootBonesParent: {fileID: 8662624141140973621}
+  targetBonesParent: {fileID: 0}
+  CharacterInstance: {fileID: 0}
+  rootBones: []
+  targetBones: []
+  rootBonePosition: {fileID: 3776127611141372065}
 --- !u!1 &3741710031930369741
 GameObject:
   m_ObjectHideFlags: 0
@@ -2004,7 +2024,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6703151058677299920
 Transform:
   m_ObjectHideFlags: 0
